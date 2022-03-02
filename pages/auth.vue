@@ -44,7 +44,7 @@
                             </v-btn>
                           <!-- </v-col>
                           <v-col cols="10"> -->
-                            <nuxt-link to="#" color="#351BA9" 
+                            <nuxt-link to="/forgotpsw" color="#351BA9" 
                                 class="text-decoration-none">Забыли пароль?</nuxt-link>
                           <!-- </v-col> -->
                         </v-row>
@@ -55,7 +55,11 @@
                     </v-form> 
                    </v-col>
                 </v-row>
-                <v-row>
+                <v-row class="pa-0 mt-12 justify-start align-self-center">
+                    <nuxt-link to="#" color="#351BA9" 
+                                class="text-decoration-none black--text pa-4">Впервые в Олимп?</nuxt-link>
+                    <nuxt-link to="#" color="#351BA9" 
+                                class="text-decoration-none #351BA9--text pa-4">Зарегистрироваться?</nuxt-link>
                 </v-row>
               <!-- </v-col>
               <v-col col="6" align-self="end">
@@ -91,6 +95,7 @@ export default {
                 name: "",
                 pwd: ""
             },
+            page: "auth"
 
         }
     },
@@ -102,8 +107,13 @@ export default {
              this.checkPwd({login: this.user.name, pwd: this.user.pwd});
              window.location.replace('userPage.vue');
         }
-
-    }
+    // },
+    // created: {
+    //     getPage(){
+    //         this.$emit('pagename', page);
+    //     }
+    // }
+}
 }
 </script>
 

@@ -88,7 +88,7 @@
                 </v-row>
                     
                 <Nuxt/>
-                
+                 <!-- :pagename="page" -->
               </v-col>
               <v-col col="6" align-self="end">
                   <div class="parent-for-sparkline">
@@ -111,6 +111,8 @@
 </template>
 
 <script>
+// import {mapGetters} from 'vuex';
+
 export default {
   data () {
     return {
@@ -148,13 +150,27 @@ export default {
           to: '/newproject',
           color: '#ffffff'
         }
-
       ],
       miniVariant: false,
       right: true,
       rightDrawer: false,
       title: 'Э́врика'
+    //   page: {
+    //       title: "Заголовок",
+    //       mess: "Сообщение"
+    //   }
     }
+//   },
+//   mounted: {
+//       ...mapGetters({
+//             getPage: 'getInfopage'
+//             }),
+//       pageInfo(namepage) {
+//           if (!getPage(namepage)==="error") {
+//               this.page.title = getPage(namepage).title;
+//               this.page.mess = getPage(namepage).message;
+//           }
+//       }
   }
 }
 </script>
