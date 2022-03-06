@@ -1,4 +1,8 @@
 import colors from 'vuetify/es5/util/colors'
+// import { library } from '@fortawesome/fontawesome-svg-core'
+// import { faUserSecret } from '@fortawesome/free-solid-svg-icons'
+// import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
 
 export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode

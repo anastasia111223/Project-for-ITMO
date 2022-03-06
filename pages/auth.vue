@@ -1,18 +1,13 @@
 <template>
-      <v-container>
-          <!-- <v-row>
-              <v-col col="6" align-self="center" justify="center">
-                <v-row class="overflow-hidden ma-0">
-                    <OlimpLogo/>
-                </v-row>
+      <v-container class="d-flex justify-center">
                 <v-row justify="center" wrap>
                     <v-col col="12" align-self="center">
-                    <h1 class="#351BA9--text text-center display-2 font-weight-bold">Добро пожаловать!</h1>
-                    <p class="text-caption font-weight-light d-block text-center">Пожалуйста, войдите в свой профиль</p>
+                    <h1 class="comment-title text-sm-h3">{{ title  }}</h1>
+                    <p class="text-caption font-weight-light d-block text-center">{{message}}</p>
                     </v-col>
-                </v-row> -->
+                </v-row>
                 <v-row class="pa-0" justify="center">
-                    <v-col col="6" sm="8" xs="12" align-self="center" >
+                    <!-- <v-col col="6" sm="8" xs="12" align-self="center" > -->
                         <v-form @submit.prevent="authTo">
                         <v-text-field id="name" 
                             label="Логин" 
@@ -27,8 +22,10 @@
                     <!-- </v-row> -->
                     <!-- <v-row class="pa-1 my-2 d-block"> -->
                         <v-text-field id="password" 
-                            label="Логин" 
-                            type="password" 
+                            label="Пароль" 
+                            :append-icon="showPasswordIcon ? '$vuetify.icons.values.eye' : '$vuetify.icons.values.eyeSlash'"
+                            :type="showPasswordIcon ? 'text' : 'password'"
+                            @click:append="showPasswordIcon = !showPasswordIcon"
                             v-model.trim="user.pwd"
                             class="border-radius.rounded-lg"
                             counter="50"
@@ -36,11 +33,13 @@
                             clearable
                             color="blue darken-2"
                             required></v-text-field>
+                            <!-- <font-awesome-icon icon="spinner" /> -->
                         <!-- <input type="submit"> -->
                         <v-row class="pa-0 my-2 justify-space-between align-self-center">
                           <!-- <v-col cols="2" > -->
                             <v-btn depressed small class="my-4 rounded-xl" dark color="#351BA9">
                                 <v-icon>&#x2713</v-icon>
+                                
                             </v-btn>
                           <!-- </v-col>
                           <v-col cols="10"> -->
@@ -53,7 +52,7 @@
                             dark color="#351BA9">Войти</v-btn>
             <!-- <nuxt-link to="/userPage">Перейти в личный кабинет</nuxt-link> -->
                     </v-form> 
-                   </v-col>
+                   <!-- </v-col> -->
                 </v-row>
                 <v-row class="pa-0 mt-12 justify-start align-self-center">
                     <nuxt-link to="#" color="#351BA9" 
@@ -93,10 +92,11 @@ export default {
         return {
             user : {
                 name: "",
-                pwd: ""
+                password: ""
             },
-            page: "auth"
-
+            page: "auth",
+            title: "Добро пожаловать!",
+            message: "Пожалуйста, войдите в свой профиль"
         }
     },
     methods: {                                                                                                             
@@ -118,36 +118,16 @@ export default {
 </script>
 
 <style>
-.parent-for-sparkline {
-    position: relative;
-  width:100%;
-  height: 85%;
-  overflow: hidden;
-  /* padding: 0; */
-  background-color : transparent;
+.comment-title {
+  font-size: 4.11em; /* 70px */
+  font-weight: bold;
+  color: #351BA9;
+  text-align: center;
+  margin: 0 0 1.95vh 0; /* 20px */
 }
-.first-sparkline {
-    position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 95%;
-  height: 80%;
+@media $display-breakpoints.sm-only {
+    font-size: 2em;
 }
-.sparkline3 {
-    z-index: 10;
-    position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 90%;
-  height: 75%;
-}
-.sparkline4 {
-    z-index: 20;
-    position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 85%;
-  height: 70%;
-}
+
 
 </style>
