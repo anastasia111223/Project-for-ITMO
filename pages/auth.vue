@@ -1,12 +1,12 @@
 <template>
-      <v-container class="d-flex justify-center">
+      <v-container >
                 <v-row justify="center" wrap>
                     <v-col col="12" align-self="center">
-                    <h1 class="comment-title text-sm-h3">{{ title  }}</h1>
+                    <h1 class="comment-title" :font-size="fontSize">{{ title  }}</h1>
                     <p class="text-caption font-weight-light d-block text-center">{{message}}</p>
                     </v-col>
                 </v-row>
-                <v-row class="pa-0" justify="center">
+                <v-row class="pa-0 d-flex justify-center">
                     <!-- <v-col col="6" sm="8" xs="12" align-self="center" > -->
                         <v-form @submit.prevent="authTo">
                         <v-text-field id="name" 
@@ -99,6 +99,17 @@ export default {
             message: "Пожалуйста, войдите в свой профиль"
         }
     },
+    computed: {
+      fontSize () {
+        switch (this.$vuetify.breakpoint.name) {
+          case 'xs': return '1.5em'
+          case 'sm': return '2.6em'
+          case 'md': return '3.3em'
+          case 'lg': return '4.11em'
+          case 'xl': return '4.11em'
+        }
+      },
+    },
     methods: {                                                                                                             
         ...mapMutations({
             checkPwd: 'checkPwd'
@@ -119,15 +130,11 @@ export default {
 
 <style>
 .comment-title {
-  font-size: 4.11em; /* 70px */
+  /* font-size: 4.11em; 70px */
   font-weight: bold;
   color: #351BA9;
   text-align: center;
   margin: 0 0 1.95vh 0; /* 20px */
 }
-@media $display-breakpoints.sm-only {
-    font-size: 2em;
-}
-
 
 </style>
