@@ -1,5 +1,11 @@
 <template>
       <v-container>
+                <v-row justify-center wrap>
+                    <v-col col="12" align-self="center">
+                    <h1 class="comment-title" :size="fontSize">{{ title  }}</h1>
+                    <p class="text-caption font-weight-light d-block text-center">{{message}}</p>
+                    </v-col>
+                </v-row>
                 <v-row class="pa-0" justify="center">
                     <v-col col="6" sm="8" xs="12" align-self="center" >
                         <v-form @submit.prevent="authTo">
@@ -50,7 +56,9 @@ export default {
                 password2: "",
                 email: ""
             },
-            page: "auth"
+            page: "auth",
+            title: "Смена пароля",
+            message: "Введите новый пароль"
 
         }
     },

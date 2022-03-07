@@ -11,10 +11,7 @@ export const state =() => ({
         message: "Введите новый пароль..."
         }
     ],
-    authorize: {
-        user: "nick",
-        pwd: "nick"
-    },
+    authorize: "",
     onAuth: false
     // onAuth: false
 })
@@ -28,6 +25,14 @@ export const getters = {
     }
 }
 export const mutations = {
+    setAuth(state,token) {
+        if (!token== false) {
+            state.authorize = token;
+            return true;
+        } else {
+            return false;
+        }
+    },
     checkPwd(state,{login, pwd}) {
         if (state.authorize.user === login && state.authorize.pwd === pwd) {
             state.onAuth = true;
