@@ -1,5 +1,5 @@
 <template>
-      <v-container >
+      <v-container>
                 <v-row justify-center wrap>
                     <v-col col="12" align-self="center">
                     <h1 class="comment-title" :size="fontSize">{{ title  }}</h1>
@@ -8,9 +8,7 @@
                 </v-row>
                 <v-row class="d-flex justify-center pa-0">
                     <v-col col="6" sm="8" xs="12" align-self="center" >
-                        <v-form @submit.prevent="authTo"
-                          ref="form"
-                          v-model="valid"
+                        <v-form ref="form"
                           lazy-validation>
                           <label for="name">Логин</label>
                           <v-text-field id="name" 
@@ -28,13 +26,11 @@
                             required></v-text-field>
                     <!-- </v-row> -->
                     <!-- <v-row class="pa-1 my-2 d-block"> -->
+                        <label for="password">Пароль</label>
                         <v-text-field id="password" 
                             label="Пароль" 
-                            :append-icon="showPasswordIcon ? '$vuetify.icons.values.eye' : '$vuetify.icons.values.eyeSlash'"
-                            :type="showPasswordIcon ? 'text' : 'password'"
-                            @click:append="showPasswordIcon = !showPasswordIcon"
                             v-model.trim="user.pwd"
-                            :rules="namePassword"
+                            :rules="passwordRules"
                             class="border-radius.rounded-lg"
                             counter="50"
                             outlined
@@ -42,8 +38,9 @@
                             onchange="validate"
                             color="blue darken-2"
                             required></v-text-field>
-                            <!-- <font-awesome-icon icon="spinner" /> -->
-                        <!-- <input type="submit"> -->
+                            <!-- :append-icon="showPasswordIcon ? '$vuetify.icons.values.eye' : '$vuetify.icons.values.eyeSlash'"
+                            :type="showPasswordIcon ? 'text' : 'password'"
+                            @click:append="showPasswordIcon = !showPasswordIcon" -->
                         <v-row class="pa-0 ma-3 justify-space-between align-self-center">
                           <!-- <v-col cols="2" > -->
                             <v-btn depressed small class="my-4 rounded-xl" dark color="#351BA9">
@@ -53,7 +50,7 @@
                           <!-- </v-col>
                           <v-col cols="10"> -->
                             <nuxt-link to="/forgotpsw" color="#351BA9" 
-                                class="text-decoration-none">Забыли пароль?</nuxt-link>
+                                class="text-decoration-none ma-1">Забыли пароль?</nuxt-link>
                           <!-- </v-col> -->
                         </v-row>
                         <v-btn type="submit" 
@@ -102,7 +99,7 @@ export default {
               v => !!v || 'Поле должно быть заполнено',
               v => (v && v.length <= 50) || 'Логин не может быть больше 50 символов',
             ],
-            namePassword: [
+            passwordRules: [
               v => !!v || 'Поле должно быть заполнено',
               // v => (v && v.length >= 6) || 'Пароль не может быть меньше 6 символов',
             ],
@@ -133,7 +130,8 @@ export default {
             this.$refs.form.validate();
         },                                                                                                         
         signIn(){
-      // валидация и проверки
+          // ..валидация и проверки 
+        this.validate();
       let fd= new FormData();
       fd.append('login', this.user.name); 
       fd.append('passsword', this.user.password);
@@ -145,7 +143,7 @@ export default {
         // тут действия зависят от того массива (массив получили из json) который прислал сервер
         // сервер может прислать: 
         // [
-        // 'message' => 'success'  // или 'error'
+        // 'message' => 'token'  // или 'error'
         // 'reason' => '1 - когда пришла ошибка ('error')
         //  ]
         let answer = document.querySelector(".erroruser");
@@ -154,9 +152,12 @@ export default {
             window.location.replace('/userPage');
           }
         } else if (json.message==='error' && json.reason === 1) {
-          answer.innerText = 'Пользователь с таким именем уже есть';
+          answer.innerText = 'Такой пользователь не зарегистрирован';
           this.overlay = true;
         //   отправка текста в overlay и его отоблражение true 
+        } else if (json.message==='error' && json.reason === 2) {
+          answer.innerText = 'Неверный пароль';
+          this.overlay = true;
         } else {
           answer.innerText = 'Попробуйте позже';
           this.overlay = true;

@@ -66,5 +66,11 @@ export default {
 </script>
 
 <style>
-
+.comment-title {
+  /* font-size: 4.11em; 70px */
+  font-weight: bold;
+  color: #351BA9;
+  text-align: center;
+  margin: 0 0 1.95vh 0; /* 20px */
+}
 </style>
