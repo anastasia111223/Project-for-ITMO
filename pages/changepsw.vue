@@ -9,7 +9,9 @@
                 <v-row class="pa-0" justify="center">
                     <v-col col="6" sm="8" xs="12" align-self="center" >
                         <v-form ref="form"
+                          @submit.prevent="changePsw"
                           lazy-validation>
+                        <label for="password">Пароль</label>
                         <v-text-field id="password" 
                             label="Пароль" 
                             type="password" 
@@ -21,6 +23,7 @@
                             clearable
                             color="blue darken-2"
                             required></v-text-field>
+                        <label for="password2">Повторите пароль</label>
                         <v-text-field id="password2" 
                             label="Повторите пароль" 
                             type="password" 
@@ -33,15 +36,14 @@
                             color="blue darken-2"
                             required></v-text-field>
                         <v-row class="pa-0 my-2 justify-center">
-                            <v-btn type="submit" depressed class="d-block ma-5 px=10"
-                                @submit.prevent="changePsw" 
+                            <v-btn type="submit" depressed class="d-block ma-2 px=10" 
                                 dark color="#351BA9" width="60%">Подтвердить</v-btn>
                         </v-row>
                         <v-overlay
                             :absolute="absolute"
                             :z-index="zIndex"
                             :value="overlay">
-                            <nuxt-link to="/auth">
+                            <nuxt-link :to="path">
                                 <v-btn
                                 class="erroruser white--text"
                                 color="#351BA9"></v-btn>
@@ -61,7 +63,7 @@
 // import {mapMutations} from 'vuex';
 
 export default {
-    layout: 'authorization',
+    // layout: 'authorization',
     data(){
         return {
             user : {
@@ -83,7 +85,8 @@ export default {
             message: "Введите новый пароль",
             overlay: false,
             absolute: true,
-            zIndex: 1
+            zIndex: 1,
+            path: "/auth"
 
         }
     },
@@ -118,6 +121,7 @@ export default {
         //   answer.innerText = 'Такой пользователь не зарегистрирован';
         //   this.overlay = true;
         } else {
+          path = "/auth" // или поставить # ???
           answer.innerText = 'Попробуйте позже';
           this.overlay = true;
         }

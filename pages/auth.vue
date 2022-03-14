@@ -9,6 +9,7 @@
                 <v-row class="d-flex justify-center pa-0">
                     <v-col col="6" sm="8" xs="12" align-self="center" >
                         <v-form ref="form"
+                          @submit.prevent="signIn"
                           lazy-validation>
                           <label for="name">Логин</label>
                           <v-text-field id="name" 
@@ -33,15 +34,19 @@
                             :rules="passwordRules"
                             class="border-radius.rounded-lg"
                             counter="50"
+                            :append-icon="showPasswordIcon ? 'mdi-eye' : 'mdi-eye-off'"
+                            :type="showPasswordIcon ? 'text' : 'password'"
+                            @click:append="showPasswordIcon = !showPasswordIcon"
                             outlined
                             clearable
                             onchange="validate"
                             color="blue darken-2"
                             required></v-text-field>
-                            <!-- :append-icon="showPasswordIcon ? '$vuetify.icons.values.eye' : '$vuetify.icons.values.eyeSlash'"
+                            <!-- :append-icon="showPasswordIcon ? 'mdi-eye-on' : 'mdi-eye-off'"
                             :type="showPasswordIcon ? 'text' : 'password'"
-                            @click:append="showPasswordIcon = !showPasswordIcon" -->
-                        <v-row class="pa-0 ma-3 justify-space-between align-self-center">
+                            @click:append="showPasswordIcon = !showPasswordIcon" 
+                            append-icon="mdi-eye-off"-->
+                        <v-row class="pa-0 ma-3 justify-space-between align-item-center">
                           <!-- <v-col cols="2" > -->
                             <v-btn depressed small class="my-4 rounded-xl" dark color="#351BA9">
                                 <v-icon>&#x2713</v-icon>
@@ -50,11 +55,10 @@
                           <!-- </v-col>
                           <v-col cols="10"> -->
                             <nuxt-link to="/forgotpsw" color="#351BA9" 
-                                class="text-decoration-none ma-1">Забыли пароль?</nuxt-link>
+                                class="d-block ma-2 text-decoration-none ma-1">Забыли пароль?</nuxt-link>
                           <!-- </v-col> -->
                         </v-row>
                         <v-btn type="submit" 
-                            @submit.prevent="signIn"
                             class="d-online-block elevation-2 ma-5 px=10"
                             width="60%"
                             dark color="#351BA9">Войти</v-btn>
@@ -84,11 +88,7 @@
 import {mapMutations} from 'vuex';
 
 export default {
-    layout: 'authorization',
-    // OR
-    // layout (context) {
-    // return 'authorization'
-    // },
+    // layout: 'authorization',
     data(){
         return {
             user : {
@@ -108,7 +108,8 @@ export default {
             message: "Пожалуйста, войдите в свой профиль",
             overlay: false,
             absolute: true,
-            zIndex: 1
+            zIndex: 1,
+            showPasswordIcon: false
         }
     },
     computed: {

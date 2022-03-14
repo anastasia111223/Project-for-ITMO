@@ -1,4 +1,5 @@
 import colors from 'vuetify/es5/util/colors'
+// import '@mdi/font/css/materialdesignicons.css'
 // import { library } from '@fortawesome/fontawesome-svg-core'
 // import { faUserSecret } from '@fortawesome/free-solid-svg-icons'
 // import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
@@ -32,6 +33,7 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+    // 'plugins/vuetify.js'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -68,5 +70,6 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+    // vendor: ['vuetify']
   }
 }
