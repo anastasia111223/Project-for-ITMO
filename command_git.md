@@ -101,6 +101,15 @@ Git<2.23.0
 git checkout -b <branch_name>
 ```
 
+#### Создание ветки из master
+```bash
+git checkout master
+git branch new-branch
+git checkout new-branch
+```
+
+
+
 #### Переключение между ветками (Git>=2.23.0 - 16.08.2019)
 ```bash
  $ git switch <branch_name>

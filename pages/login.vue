@@ -9,13 +9,13 @@
                 <v-row class="d-flex justify-center pa-0">
                     <v-col col="6" sm="8" xs="12" align-self="center" >
                         <v-form ref="form"
-                          @submit.prevent="signIn"
+                          @submit.prevent="login"
                           lazy-validation>
                           <label for="name">Логин</label>
-                          <v-text-field id="name" 
-                            label="Александрович" 
-                            type="text" 
-                            v-model.trim="user.name"
+                          <v-text-field id="name"
+                            label="Александрович"
+                            type="text"
+                            v-model.trim="user.login"
                             class="border-radius.rounded-lg pa-0 ma-1"
                             :counter="50"
                             :rules="nameRules"
@@ -28,9 +28,9 @@
                     <!-- </v-row> -->
                     <!-- <v-row class="pa-1 my-2 d-block"> -->
                         <label for="password">Пароль</label>
-                        <v-text-field id="password" 
-                            label="Пароль" 
-                            v-model.trim="user.pwd"
+                        <v-text-field id="password"
+                            label="Пароль"
+                            v-model.trim="user.password"
                             :rules="passwordRules"
                             class="border-radius.rounded-lg"
                             counter="50"
@@ -44,26 +44,26 @@
                             required></v-text-field>
                             <!-- :append-icon="showPasswordIcon ? 'mdi-eye-on' : 'mdi-eye-off'"
                             :type="showPasswordIcon ? 'text' : 'password'"
-                            @click:append="showPasswordIcon = !showPasswordIcon" 
+                            @click:append="showPasswordIcon = !showPasswordIcon"
                             append-icon="mdi-eye-off"-->
                         <v-row class="pa-0 ma-3 justify-space-between align-item-center">
                           <!-- <v-col cols="2" > -->
                             <v-btn depressed small class="my-4 rounded-xl" dark color="#351BA9">
                                 <v-icon>&#x2713</v-icon>
-                                
+
                             </v-btn>
                           <!-- </v-col>
                           <v-col cols="10"> -->
-                            <nuxt-link to="/forgotpsw" color="#351BA9" 
+                            <nuxt-link to="/forgotpsw" color="#351BA9"
                                 class="d-block ma-2 text-decoration-none ma-1">Забыли пароль?</nuxt-link>
                           <!-- </v-col> -->
                         </v-row>
-                        <v-btn type="submit" 
+                        <v-btn type="submit"
                             class="d-online-block elevation-2 ma-5 px=10"
                             width="60%"
                             dark color="#351BA9">Войти</v-btn>
             <!-- <nuxt-link to="/userPage">Перейти в личный кабинет</nuxt-link> -->
-                    </v-form> 
+                    </v-form>
                    </v-col>
                    <v-overlay
                     :absolute="absolute"
@@ -76,13 +76,13 @@
                    </v-overlay>
                 </v-row>
                 <v-row class="pa-0 mt-12 justify-start align-self-center">
-                    <nuxt-link to="#" color="#351BA9" 
+                    <nuxt-link to="#" color="#351BA9"
                                 class="text-decoration-none black--text pa-4">Впервые в Олимп?</nuxt-link>
-                    <nuxt-link to="#" color="#351BA9" 
+                    <nuxt-link to="#" color="#351BA9"
                                 class="text-decoration-none #351BA9--text pa-4">Зарегистрироваться?</nuxt-link>
                 </v-row>
       </v-container>
-      
+
 </template>
 <script>
 import {mapMutations} from 'vuex';
@@ -92,8 +92,8 @@ export default {
     data(){
         return {
             user : {
-                name: "",
-                password: ""
+                login: "petro",
+                password: "test"
             },
             nameRules: [
               v => !!v || 'Поле должно быть заполнено',
@@ -124,17 +124,31 @@ export default {
       },
     },
     methods: {
-      ...mapMutations({
-            setAuth: 'setAuth'
-            }), 
-        validate () {
+       async login() {
+         try {
+           console.log('call local politic')
+           await this.$auth.loginWith('local', {
+             data: {
+               login: this.user.login,
+               password: this.user.password
+             }
+           })
+            console.log('redirect')
+           // this.$router.push('/')
+         } catch (e) {
+           this.error = e.response.data.message
+           console.log(this.error)
+         }
+      },
+
+       validate () {
             this.$refs.form.validate();
-        },                                                                                                         
+        },
         signIn(){
-          // ..валидация и проверки 
+          // ..валидация и проверки
         this.validate();
       let fd= new FormData();
-      fd.append('login', this.user.name); 
+      fd.append('login', this.user.name);
       fd.append('passsword', this.user.password);
       fetch('/auth', {
         method: 'post',
@@ -142,7 +156,7 @@ export default {
       }).then(response => response.json())
       .then(json => {
         // тут действия зависят от того массива (массив получили из json) который прислал сервер
-        // сервер может прислать: 
+        // сервер может прислать:
         // [
         // 'message' => 'token'  // или 'error'
         // 'reason' => '1 - когда пришла ошибка ('error')
@@ -155,7 +169,7 @@ export default {
         } else if (json.message==='error' && json.reason === 1) {
           answer.innerText = 'Такой пользователь не зарегистрирован';
           this.overlay = true;
-        //   отправка текста в overlay и его отоблражение true 
+        //   отправка текста в overlay и его отоблражение true
         } else if (json.message==='error' && json.reason === 2) {
           answer.innerText = 'Неверный пароль';
           this.overlay = true;
