@@ -1,5 +1,12 @@
 <template>
       <v-container>
+
+            <v-row  v-if="$auth.loggedIn"  justify-center wrap>
+                <v-col col="12" align-self="center">
+                 <v-btn text @click="$auth.logout()">Logout</v-btn>
+          <!-- v-if="$auth.loggedIn" -->
+                </v-col>
+            </v-row>
                 <v-row justify-center wrap>
                     <v-col col="12" align-self="center">
                     <h1 class="comment-title" :size="fontSize">{{ title  }}</h1>
@@ -54,7 +61,7 @@
                             </v-btn>
                           <!-- </v-col>
                           <v-col cols="10"> -->
-                            <nuxt-link to="/forgotpsw" color="#351BA9"
+                            <nuxt-link to="/password/forgot" color="#351BA9"
                                 class="d-block ma-2 text-decoration-none ma-1">Забыли пароль?</nuxt-link>
                           <!-- </v-col> -->
                         </v-row>
@@ -78,9 +85,12 @@
                 <v-row class="pa-0 mt-12 justify-start align-self-center">
                     <nuxt-link to="#" color="#351BA9"
                                 class="text-decoration-none black--text pa-4">Впервые в Олимп?</nuxt-link>
-                    <nuxt-link to="#" color="#351BA9"
+                    <nuxt-link to="/registration" color="#351BA9"
                                 class="text-decoration-none #351BA9--text pa-4">Зарегистрироваться?</nuxt-link>
                 </v-row>
+
+
+
       </v-container>
 
 </template>
@@ -88,7 +98,7 @@
 import {mapMutations} from 'vuex';
 
 export default {
-    // layout: 'authorization',
+    layout: 'auth',
     data(){
         return {
             user : {
@@ -127,67 +137,76 @@ export default {
        async login() {
          try {
            console.log('call local politic')
-           await this.$auth.loginWith('local', {
+           var respons = await this.$auth.loginWith('local', {
              data: {
                login: this.user.login,
                password: this.user.password
              }
            })
-            console.log('redirect')
+           console.log(respons.data)
+           if (respons.data.app_code == 403) {
+           // TODO: дописать логику отображения сообщения о неправильном логине  и пароле
+             console.log("показываем на форме предупреждение о логине")
+           }
+
+           if (respons.data.app_code == 401) {
+             console.log("показываем на форме предупреждение что пароль не подходит")
+           }
+
+
+           console.log(this.$auth.user)
            // this.$router.push('/')
          } catch (e) {
-           this.error = e.response.data.message
-           console.log(this.error)
+          // TODO: выводить сообщение пользователю что сервер не доступен
+           console.log("сервер не доступен , попробуйте повторить попытку позже")
+           console.log(e)
+
          }
       },
 
        validate () {
             this.$refs.form.validate();
         },
-        signIn(){
-          // ..валидация и проверки
-        this.validate();
-      let fd= new FormData();
-      fd.append('login', this.user.name);
-      fd.append('passsword', this.user.password);
-      fetch('/auth', {
-        method: 'post',
-        body: fd
-      }).then(response => response.json())
-      .then(json => {
-        // тут действия зависят от того массива (массив получили из json) который прислал сервер
-        // сервер может прислать:
-        // [
-        // 'message' => 'token'  // или 'error'
-        // 'reason' => '1 - когда пришла ошибка ('error')
-        //  ]
-        let answer = document.querySelector(".erroruser");
-        if (!json.message ==='error') {
-          if (this.setAuth(json.message)) {
-            window.location.replace('/userPage');
-          }
-        } else if (json.message==='error' && json.reason === 1) {
-          answer.innerText = 'Такой пользователь не зарегистрирован';
-          this.overlay = true;
-        //   отправка текста в overlay и его отоблражение true
-        } else if (json.message==='error' && json.reason === 2) {
-          answer.innerText = 'Неверный пароль';
-          this.overlay = true;
-        } else {
-          answer.innerText = 'Попробуйте позже';
-          this.overlay = true;
-        }
-      }).catch(e => {
-        console.log(e); // перехват ошибки, если грубая ошибка, не установилось соединение
-      });
-    }
-    }
-    // },
-    // created: {
-    //     getPage(){
-    //         this.$emit('pagename', page);
+    //     signIn(){
+    //       console.log("signIn")
+    //       // ..валидация и проверки
+    //     this.validate();
+    //   let fd= new FormData();
+    //   fd.append('login', this.user.name);
+    //   fd.append('passsword', this.user.password);
+    //   fetch('/auth', {
+    //     method: 'post',
+    //     body: fd
+    //   }).then(response => response.json())
+    //   .then(json => {
+    //     // тут действия зависят от того массива (массив получили из json) который прислал сервер
+    //     // сервер может прислать:
+    //     // [
+    //     // 'message' => 'token'  // или 'error'
+    //     // 'reason' => '1 - когда пришла ошибка ('error')
+    //     //  ]
+    //     let answer = document.querySelector(".erroruser");
+    //     if (!json.message ==='error') {
+    //       if (this.setAuth(json.message)) {
+    //         window.location.replace('/userPage');
+    //       }
+    //     } else if (json.message==='error' && json.reason === 1) {
+    //       answer.innerText = 'Такой пользователь не зарегистрирован';
+    //       this.overlay = true;
+    //     //   отправка текста в overlay и его отоблражение true
+    //     } else if (json.message==='error' && json.reason === 2) {
+    //       answer.innerText = 'Неверный пароль';
+    //       this.overlay = true;
+    //     } else {
+    //       answer.innerText = 'Попробуйте позже';
+    //       this.overlay = true;
     //     }
+    //   }).catch(e => {
+    //     console.log(e); // перехват ошибки, если грубая ошибка, не установилось соединение
+    //   });
     // }
+    }
+
 }
 </script>
 

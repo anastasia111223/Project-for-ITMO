@@ -128,10 +128,11 @@
                           <v-btn type="registration" class="d-online-block elevation-2 ma-5 px=10"
                             width="60%"
                             dark color="#351BA9">Зарегистрироваться</v-btn>
-                        <v-btn type="enter" class="d-online-block elevation-2 ma-5 px=10"
+
+                        <!-- <v-btn type="enter" class="d-online-block elevation-2 ma-5 px=10"
                             width="60%"
-                            >Войти</v-btn>
-           <v-form><nuxt-link to="/userPage">Зарегистрироваться с помощью</nuxt-link> </v-form>
+                            >Войти</v-btn> -->
+           <v-form><nuxt-link to="/login">Войти</nuxt-link> </v-form>
                              </v-row>
 
                     </v-form>
@@ -159,16 +160,10 @@
 
 </template>
 <script>
-// import {mapMutations} from 'vuex';
-
 
 export default {
-
-     // layout: 'authorization',
-    // OR
-    // layout (context) {
-    // return 'authorization'
-    // },
+    // TODO: Написать метод создания пользователя через вызов REST API
+    layout: 'auth',
     data(){
         return {
             user : {

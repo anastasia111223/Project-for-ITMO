@@ -1,7 +1,7 @@
 <template>
-
-      <v-container>
-          <v-row>
+  <v-app dark>
+    <v-main>
+      <v-row>
               <v-col col="6" >
                 <v-row class="ma-0">
                   <div class="logo">
@@ -14,7 +14,7 @@
                   </div>
                     <!-- <OlimpLogo/> -->
                 </v-row>
-                
+
 
                 <Nuxt/>
                  <!-- :pagename="page" -->
@@ -70,16 +70,22 @@
               </v-col>
 
           </v-row>
-
-      </v-container>
+    </v-main>
+  </v-app>
 </template>
+
 <script>
-
-
 export default {
-    data(){
-        return {
-            blue_wave_values: [0,55,45,92,65],
+  data () {
+    return {
+      clipped: false,
+      drawer: false,
+      fixed: false,
+      miniVariant: false,
+      right: true,
+      rightDrawer: false,
+      title: 'Э́врика',
+      blue_wave_values: [0,55,45,92,65],
             blue_wave_radius: 60,
             green_wave_values: [0,55,45,92,65],
             green_wave_radius: 60,
@@ -87,15 +93,12 @@ export default {
             yellow_wave_radius: 60,
             red_wave_values: [0,55,45,92,65],
             red_wave_radius: 60
-        }
     }
+  }
 }
 </script>
 
 <style>
-
-
-
 .shadow-line {
     box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
 }
@@ -203,4 +206,7 @@ svg {
   padding:0 !important;
 }
 
+.logo {
+  margin-top: 1em;
+}
 </style>

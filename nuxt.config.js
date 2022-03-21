@@ -53,13 +53,25 @@ export default {
   ],
 
   auth: {
+  redirect: {
+     login: '/',
+     logout: '/login',
+     callback: '/login',
+     home: '/'
+   },
    strategies: {
      local: {
+       token: {
+         property: 'access_token',
+         global: true,
+         // type: 'Bearer'
+     },
        endpoints: {
          login: { url: 'login', method: 'post', propertyName: 'access_token' },
-          user: { url: 'user', method: 'get', propertyName: 'data' },
-        logout: { url: 'logout' , method: 'delete'  }
-       }
+         user: { url: 'user', method: 'get', propertyName: 'user' },
+         logout: { url: 'logout' , method: 'delete' , propertyName: 'user' }
+       },
+       tokenType: ''
      }
    }
   },

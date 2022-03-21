@@ -12,9 +12,9 @@
                           @submit.prevent="changePsw"
                           lazy-validation>
                         <label for="password">Пароль</label>
-                        <v-text-field id="password" 
-                            label="Пароль" 
-                            type="password" 
+                        <v-text-field id="password"
+                            label="Пароль"
+                            type="password"
                             v-model.trim="user.password"
                             class="border-radius.rounded-lg"
                             counter="50"
@@ -24,9 +24,9 @@
                             color="blue darken-2"
                             required></v-text-field>
                         <label for="password2">Повторите пароль</label>
-                        <v-text-field id="password2" 
-                            label="Повторите пароль" 
-                            type="password" 
+                        <v-text-field id="password2"
+                            label="Повторите пароль"
+                            type="password"
                             v-model.trim="user.password2"
                             class="border-radius.rounded-lg"
                             counter="50"
@@ -36,7 +36,7 @@
                             color="blue darken-2"
                             required></v-text-field>
                         <v-row class="pa-0 my-2 justify-center">
-                            <v-btn type="submit" depressed class="d-block ma-2 px=10" 
+                            <v-btn type="submit" depressed class="d-block ma-2 px=10"
                                 dark color="#351BA9" width="60%">Подтвердить</v-btn>
                         </v-row>
                         <v-overlay
@@ -49,21 +49,21 @@
                                 color="#351BA9"></v-btn>
                             </nuxt-link>
                         </v-overlay>
-                    </v-form> 
+                    </v-form>
                    </v-col>
                 </v-row>
 
                 <v-row>
                 </v-row>
-        
+
       </v-container>
-      
+
 </template>
 <script>
 // import {mapMutations} from 'vuex';
 
 export default {
-    // layout: 'authorization',
+    layout: 'auth',
     data(){
         return {
             user : {
@@ -90,21 +90,21 @@ export default {
 
         }
     },
-    methods: {  
+    methods: {
         validate () {
             this.$refs.form.validate();
-        },                                                                                                      
+        },
         changePsw(){
             this.validate();
       if (this.user.password===this.user.password2) {
       let fd= new FormData();
-      fd.append('password', this.user.password); 
+      fd.append('password', this.user.password);
       fetch('/changepsw', {
         method: 'post',
         body: fd
       }).then(response => response.json())
       .then(json => {
-        // сервер может прислать: 
+        // сервер может прислать:
         // [
         // 'message' => 'success'  // или 'error'
         // 'reason' => '1 - когда пришла ошибка ('error')
