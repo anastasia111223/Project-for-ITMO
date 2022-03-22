@@ -49,17 +49,13 @@
                             onchange="validate"
                             color="blue darken-2"
                             required></v-text-field>
-                            <!-- :append-icon="showPasswordIcon ? 'mdi-eye-on' : 'mdi-eye-off'"
-                            :type="showPasswordIcon ? 'text' : 'password'"
-                            @click:append="showPasswordIcon = !showPasswordIcon"
-                            append-icon="mdi-eye-off"-->
                         <v-row class="pa-0 ma-3 justify-space-between align-item-center">
                           <!-- <v-col cols="2" > -->
                             <v-btn depressed small class="my-4 rounded-xl" dark color="#351BA9">
                                 <v-icon>&#x2713</v-icon>
-
                             </v-btn>
                           <!-- </v-col>
+                          icon="mdi-check"
                           <v-col cols="10"> -->
                             <nuxt-link to="/password/forgot" color="#351BA9"
                                 class="d-block ma-2 text-decoration-none ma-1">Забыли пароль?</nuxt-link>
@@ -69,7 +65,6 @@
                             class="d-online-block elevation-2 ma-5 px=10"
                             width="60%"
                             dark color="#351BA9">Войти</v-btn>
-            <!-- <nuxt-link to="/userPage">Перейти в личный кабинет</nuxt-link> -->
                     </v-form>
                    </v-col>
                    <v-overlay
@@ -88,8 +83,6 @@
                     <nuxt-link to="/registration" color="#351BA9"
                                 class="text-decoration-none #351BA9--text pa-4">Зарегистрироваться?</nuxt-link>
                 </v-row>
-
-
 
       </v-container>
 
@@ -135,6 +128,7 @@ export default {
     },
     methods: {
        async login() {
+         let answer = document.querySelector(".erroruser");
          try {
            console.log('call local politic')
            var respons = await this.$auth.loginWith('local', {
@@ -146,13 +140,16 @@ export default {
            console.log(respons.data)
            if (respons.data.app_code == 403) {
            // TODO: дописать логику отображения сообщения о неправильном логине  и пароле
-             console.log("показываем на форме предупреждение о логине")
+             console.log("показываем на форме предупреждение о логине");
+             answer.innerText = 'Пользователь не зарегистрирован';
+             this.overlay = true;
            }
 
            if (respons.data.app_code == 401) {
-             console.log("показываем на форме предупреждение что пароль не подходит")
+             console.log("показываем на форме предупреждение что пароль не подходит");
+             answer.innerText = 'Неверный пароль';
+             this.overlay = true;
            }
-
 
            console.log(this.$auth.user)
            // this.$router.push('/')
@@ -160,10 +157,11 @@ export default {
           // TODO: выводить сообщение пользователю что сервер не доступен
            console.log("сервер не доступен , попробуйте повторить попытку позже")
            console.log(e)
+           answer.innerText = 'Повторите попытку позже';
+           this.overlay = true;
 
          }
       },
-
        validate () {
             this.$refs.form.validate();
         },
