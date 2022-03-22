@@ -4,7 +4,7 @@
 
                 <v-row class="pa-0" justify="center">
                     <v-col col="6" sm="8" xs="12" align-self="center" >
-                        <v-form v-model="valid">
+                        <v-form v-model="valid"    @submit.prevent="registration">
 
       <v-row>
         <v-col
@@ -125,7 +125,9 @@
       </v-row>
 
                          <v-row class="pa-0" justify="center">
-                          <v-btn type="registration" class="d-online-block elevation-2 ma-5 px=10"
+
+
+                          <v-btn type="submit" class="d-online-block elevation-2 ma-5 px=10"
                             width="60%"
                             dark color="#351BA9">Зарегистрироваться</v-btn>
 
@@ -173,6 +175,37 @@ export default {
 
         }
     },
+    methods: {
+       async registration() {
+         try {
+           console.log('call local politic')
+           var respons = await this.$axios.post('/auth/registration', {
+             data: {
+               login: this.user.login,
+               password: this.user.password
+             }
+           })
+           console.log(respons.data)
+           if (respons.data.app_code == 403) {
+           // TODO: дописать логику отображения сообщения о неправильном логине  и пароле
+             console.log("показываем на форме предупреждение о логине")
+           }
+
+           if (respons.data.app_code == 401) {
+             console.log("показываем на форме предупреждение что пароль не подходит")
+           }
+
+
+           console.log(this.$auth.user)
+           // this.$router.push('/')
+         } catch (e) {
+          // TODO: выводить сообщение пользователю что сервер не доступен
+           console.log("сервер не доступен , попробуйте повторить попытку позже")
+           console.log(e)
+
+         }
+      },
+    }
 }
 
 </script>

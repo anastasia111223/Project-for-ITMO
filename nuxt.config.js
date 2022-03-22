@@ -9,6 +9,7 @@ export default {
   // Disable server-side rendering: https://go.nuxtjs.dev/ssr-mode
   ssr: false,
 
+
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: '%s - nuxt-test',
@@ -33,15 +34,21 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
+      { src: '~/plugins/vuetify-mask.js' },
     // 'plugins/vuetify.js'
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
-  components: true,
+  components: [
+  // Equivalent to { path: '~/components' }
+    { path: '~/components' },
+    { path: '~/components/portfolio', extensions: ['vue'] }
+  ],
 
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     // https://go.nuxtjs.dev/vuetify
+    ['@nuxtjs/eslint-module', { fix: true }],
     '@nuxtjs/vuetify',
   ],
 
@@ -51,6 +58,7 @@ export default {
     '@nuxtjs/axios',
     '@nuxtjs/auth'
   ],
+  authURL: 'http://127.0.0.1:8000/auth/',
 
   auth: {
   redirect: {
@@ -67,9 +75,9 @@ export default {
          // type: 'Bearer'
      },
        endpoints: {
-         login: { url: 'login', method: 'post', propertyName: 'access_token' },
-         user: { url: 'user', method: 'get', propertyName: 'user' },
-         logout: { url: 'logout' , method: 'delete' , propertyName: 'user' }
+         login: { url: 'http://127.0.0.1:8000/auth/login', method: 'post', propertyName: 'access_token' },
+         user: { url:  'http://127.0.0.1:8000/auth/user', method: 'get', propertyName: 'user' },
+         logout: { url: 'http://127.0.0.1:8000/auth/logout' , method: 'delete'  }
        },
        tokenType: ''
      }
@@ -77,8 +85,16 @@ export default {
   },
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
-   baseURL: 'http://127.0.0.1:8000/auth'
+    proxy: true,
+    baseURL: 'http://127.0.0.1:8000/auth',
+    browserBaseURL:  'http://127.0.0.1:8001/api',
+   // Your other configurations
   },
+
+  proxy: {
+    '/auth/': { target: 'http://127.0.0.2:8000', pathRewrite: {'^/auth/': ''} }
+  },
+
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
@@ -100,7 +116,11 @@ export default {
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
+  // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
-    // vendor: ['vuetify']
+    // Add exception
+  transpile: [
+    "vee-notifications"
+  ],
   }
 }
