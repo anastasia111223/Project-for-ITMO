@@ -15,7 +15,7 @@ export default {
     titleTemplate: '%s - nuxt-test',
     title: 'nuxt-test',
     htmlAttrs: {
-      lang: 'en'
+      lang: 'ru'
     },
     meta: [
       { charset: 'utf-8' },
@@ -30,6 +30,8 @@ export default {
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
+    '@/assets/fonts/fonts.css',
+    'vuetify/dist/vuetify.min.css'
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
@@ -48,7 +50,7 @@ export default {
   // Modules for dev and build (recommended): https://go.nuxtjs.dev/config-modules
   buildModules: [
     // https://go.nuxtjs.dev/vuetify
-    ['@nuxtjs/eslint-module', { fix: true }],
+    // ['@nuxtjs/eslint-module', { fix: true }],
     '@nuxtjs/vuetify',
   ],
 
@@ -56,9 +58,15 @@ export default {
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
-    '@nuxtjs/auth'
+    '@nuxtjs/auth',
+    '@nuxtjs/moment'
   ],
-  authURL: 'http://127.0.0.1:8000/auth/',
+
+  moment: {
+    defaultLocale: 'ru',
+    locales: ['ru']
+  },
+
 
   auth: {
   redirect: {
@@ -98,7 +106,7 @@ export default {
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {
-    customVariables: ['~/assets/variables.scss'],
+    customVariables: ['~/assets/styles/scss/variables.scss', '~/assets/styles/scss/selectors.scss'],
     theme: {
       dark: false,
       themes: {
@@ -114,6 +122,9 @@ export default {
       }
     }
   },
+
+
+
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   // Build Configuration: https://go.nuxtjs.dev/config-build

@@ -71,7 +71,7 @@
      <v-btn  icon  @click="$auth.logout()">
             <v-icon>mdi-logout</v-icon>
       </v-btn>
-      
+
     </v-app-bar>
     <v-main>
       <Nuxt />
@@ -96,7 +96,7 @@ export default {
         {
           icon: 'mdi-calendar',
           title: 'Расписание',
-          to: '/timetable',
+          to: '/schedule',
           color: '#ffffff'
         },
         {

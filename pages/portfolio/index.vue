@@ -277,9 +277,9 @@ export default {
     label: 'Телефон',
     focus: false,
     icon: 'mdi-cellphone',
-    name: '',
-    suname: '',
-    phone: '',
+    name: 'Вася',
+    suname: 'Пупкин',
+    phone: '+7 (921) 348-46-42 ',
     email: '',
     image: {
       src: null,
@@ -330,7 +330,15 @@ export default {
     }
   },
   methods: {
-    submit () {
+    async submit () {
+
+      console.log('call local politic')
+      var respons = await this.$axios.post('/collection/set', {
+        data: {
+          name: this.name,
+          surname: this.email
+        }
+      })
       this.$v.$touch()
     },
     clear () {

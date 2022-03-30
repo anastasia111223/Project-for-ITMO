@@ -1,0 +1,9 @@
+%time {
+  padding: 0;
+  color: $color;
+  text-align: center;
+
+  &::-webkit-calendar-picker-indicator {
+    display: none;
+  }
+}
