@@ -23,14 +23,13 @@
                             clearable
                             color="blue darken-2"
                             required></v-text-field>
-                        <!-- <v-row class="pa-0 my-2"> -->
+                    
                         <v-row class="pa-1 my-2 justify-center">
                             <v-btn type="submit" depressed class="d-block ma-3 px=10"
                                 dark color="#351BA9" width="60%">Подтвердить</v-btn>
-                        <!-- </v-row> -->
                             <v-btn outlined color="#351BA9"
                                 class="d-block ma-3 px=10 #351BA9--text" width="60%">
-                            <nuxt-link to="/registration"
+                              <nuxt-link to="/registration"
                                 class="text-decoration-none">Зарегистрироваться?</nuxt-link>
                             </v-btn>
                           <!-- </v-col> -->
@@ -51,7 +50,6 @@
 
 </template>
 <script>
-// import {mapMutations} from 'vuex';
 
 export default {
     layout: 'auth',
@@ -68,7 +66,7 @@ export default {
             ],
             page: "auth",
             title: "Забыли пароль?",
-            message: "Мы вышлем на почту письмо для смены пароля",
+            message: "На почту будет отправлено письмо для смены пароля",
             overlay: false,
             absolute: true,
             zIndex: 1
@@ -79,41 +77,32 @@ export default {
         validate () {
             this.$refs.form.validate();
         },
-        forgotpsw(){
-            this.validate();
-      if (this.user.password===this.user.password2) {
-      let fd= new FormData();
-      fd.append('password', this.user.password);
-      fetch('/changepsw', {
-        method: 'post',
-        body: fd
-      }).then(response => response.json())
-      .then(json => {
-        // сервер может прислать:
-        // [
-        // 'message' => 'success'  // или 'error'
-        // 'reason' => '1 - когда пришла ошибка ('error')
-        //  ]
-        let answer = document.querySelector(".erroruser");
-        if (json.message ==='success') {
-          if (this.setAuth(json.message)) {
-            answer.innerText = 'На почту отправлено письмо для смены пароля';
-            this.overlay = true;
-            // задержка по времени
-            window.location.replace('/auth');
-          }
-        } else if (json.message==='error' && json.reason === 1) {
-          answer.innerText = 'Не верно указана почта';
-          this.overlay = true;
-        } else {
-          answer.innerText = 'Попробуйте позже';
-          this.overlay = true;
-        }
-      }).catch(e => {
-        console.log(e); // перехват ошибки, если грубая ошибка, не установилось соединение
-      });
-    }
-    }
+        async forgotpsw() {
+         let answer = document.querySelector(".erroruser");
+         try {
+           console.log('call local politic')
+           let respons = await this.$axios.post('/password/forgot', {
+             data: {
+               email: this.user.email
+             }
+           })
+           console.log(respons.data);
+           answer.innerText = 'На почту отправлено письмо для смены пароля';
+           this.overlay = true;
+           if (respons.data.app_code == 403) {
+           // TODO: узнать код для 'почты нет в б.д.'
+             console.log("показываем на форме предупреждение о почте");
+             answer.innerText = 'Не верно указана почта';
+             this.overlay = true;
+           }
+           } catch (e) {
+           console.log("сервер не доступен , попробуйте повторить попытку позже")
+           console.log(e)
+           answer.innerText = 'Повторите попытку позже';
+           this.overlay = true;
+
+         }
+      },
     }
 }
 </script>
