@@ -80,7 +80,7 @@
                 <v-row class="pa-0 mt-12 justify-start align-self-center">
                     <nuxt-link to="#" color="#351BA9"
                                 class="text-decoration-none black--text pa-4">Впервые в Олимп?</nuxt-link>
-                    <nuxt-link to="/registration" color="#351BA9"
+                    <nuxt-link to="/registration/index" color="#351BA9"
                                 class="text-decoration-none #351BA9--text pa-4">Зарегистрироваться?</nuxt-link>
                 </v-row>
 

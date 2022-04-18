@@ -56,7 +56,6 @@ export default {
     data(){
         return {
             user : {
-                name: "",
                 password: "",
                 email: ""
             },
@@ -73,31 +72,55 @@ export default {
 
         }
     },
+    computed: {
+      fontSize () {
+        switch (this.$vuetify.breakpoint.name) {
+          case 'xs': return '1.5em'
+          case 'sm': return '2.6em'
+          case 'md': return '3.3em'
+          case 'lg': return '4.11em'
+          case 'xl': return '4.11em'
+        }
+      },
+    },
     methods: {
         validate () {
             this.$refs.form.validate();
         },
         async forgotpsw() {
-         let answer = document.querySelector(".erroruser");
+        //  let answer = document.querySelector(".erroruser");
          try {
-           console.log('call local politic')
+          //  console.log('call local politic')
            let respons = await this.$axios.post('/password/forgot', {
              data: {
                email: this.user.email
              }
            })
            console.log(respons.data);
-           answer.innerText = 'На почту отправлено письмо для смены пароля';
-           this.overlay = true;
+          
+          if (respons.data.app_code == 200) {
+            let answer = document.querySelector(".erroruser");
+             answer.innerText = 'На почту отправлено письмо для смены пароля';
+             this.overlay = true;
+             // задержка по времени
+             function sleep(ms) {
+              return new Promise(resolve => setTimeout(resolve, ms));
+             }
+             sleep(10000).then(() => { 
+               window.location.replace('/login');
+             });
+          }
            if (respons.data.app_code == 403) {
            // TODO: узнать код для 'почты нет в б.д.'
              console.log("показываем на форме предупреждение о почте");
+             let answer = document.querySelector(".erroruser");
              answer.innerText = 'Не верно указана почта';
              this.overlay = true;
            }
            } catch (e) {
-           console.log("сервер не доступен , попробуйте повторить попытку позже")
-           console.log(e)
+           console.log("сервер не доступен, попробуйте повторить попытку позже");
+           console.log(e);
+           let answer = document.querySelector(".erroruser");
            answer.innerText = 'Повторите попытку позже';
            this.overlay = true;
 

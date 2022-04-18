@@ -9,7 +9,7 @@
                 <v-row class="pa-0" justify="center">
                     <v-col col="6" sm="8" xs="12" align-self="center" >
                         <v-form ref="form"
-                          @submit.prevent="changePsw"
+                          @submit="change"
                           lazy-validation>
                         <label for="password">Пароль</label>
                         <v-text-field id="password"
@@ -39,15 +39,18 @@
                             <v-btn type="submit" depressed class="d-block ma-2 px=10"
                                 dark color="#351BA9" width="60%">Подтвердить</v-btn>
                         </v-row>
+                        <!-- <v-btn @click="overlay = !overlay">Overlay</v-btn> -->
                         <v-overlay
                             :absolute="absolute"
                             :z-index="zIndex"
                             :value="overlay">
-                            <nuxt-link :to="path">
+                            <!-- <nuxt-link :to="path"> -->
                                 <v-btn
-                                class="erroruser white--text"
-                                color="#351BA9"></v-btn>
-                            </nuxt-link>
+                                class="erroruser white--text pa-md-4 mx-lg-auto"
+                                ref="erroruser"
+                                color="#351BA9"
+                                @click="overlay = !overlay">{{answer}}</v-btn>
+                            <!-- </nuxt-link> -->
                         </v-overlay>
                     </v-form>
                    </v-col>
@@ -67,7 +70,6 @@ export default {
     data(){
         return {
             user : {
-                name: "",
                 password: "",
                 password2: ""
             },
@@ -86,50 +88,68 @@ export default {
             overlay: false,
             absolute: true,
             zIndex: 1,
-            path: "/auth"
-
+            path: "#",
+            answer: ""
         }
+    },
+    computed: {
+      fontSize () {
+        switch (this.$vuetify.breakpoint.name) {
+          case 'xs': return '1.5em'
+          case 'sm': return '2.6em'
+          case 'md': return '3.3em'
+          case 'lg': return '4.11em'
+          case 'xl': return '4.11em'
+        }
+      },
     },
     methods: {
         validate () {
             this.$refs.form.validate();
         },
-        changePsw(){
-            this.validate();
-      if (this.user.password===this.user.password2) {
-      let fd= new FormData();
-      fd.append('password', this.user.password);
-      fetch('/changepsw', {
-        method: 'post',
-        body: fd
-      }).then(response => response.json())
-      .then(json => {
-        // сервер может прислать:
-        // [
-        // 'message' => 'success'  // или 'error'
-        // 'reason' => '1 - когда пришла ошибка ('error')
-        //  ]
-        let answer = document.querySelector(".erroruser");
-        if (json.message ==='success') {
-            answer.innerHTML = `
-                <h4>Пароль был успешно заменен</h4>
-                <span>Вы можете перейти на страницу авторизации</span>
-                `;
-            this.overlay = true;
-            // window.location.replace('/auth');
-        // } else if (json.message==='error' && json.reason === 1) {
-        //   answer.innerText = 'Такой пользователь не зарегистрирован';
-        //   this.overlay = true;
-        } else {
-          path = "/auth" // или поставить # ???
-          answer.innerText = 'Попробуйте позже';
-          this.overlay = true;
-        }
-      }).catch(e => {
-        console.log(e); // перехват ошибки, если грубая ошибка, не установилось соединение
-      });
-    }
-    }
+        async change(event) {
+         event.preventDefault();
+        //  this.overlay = true;
+         try {
+          //  console.log('call local politic')
+           let respons = await this.$axios.post('/password/reset', {
+             data: {
+               reset_token: this.$route.query.reset_t,
+               password: this.user.password
+             }
+           })
+           console.log(respons.data);
+          if (respons.data.app_code == 200) {
+             this.overlay = true;
+            if (respons.data.app_code) console.log(respons.data.app_code);
+             this.path = "/login";
+            //  this.$refs.erroruser.innerHTML = `
+            //     <h4>Пароль был успешно заменен</h4>
+            //     <span>Вы можете перейти на страницу авторизации</span>
+            //     `;
+             this.answer = 'Пароль был успешно заменен'
+             function sleep(ms) {
+              return new Promise(resolve => setTimeout(resolve, ms));
+             }
+             sleep(10000).then(() => { 
+              //  window.location.replace('/login');
+              this.router.push('/login');
+             });
+          }
+           if (respons.data.app_code == 403) {
+           // TODO: какие ошибки будут
+             this.overlay = true;
+             console.log("Ошибка 403");
+             this.answer = 'Нельзя изменить пароль для не существующего пользователя';
+           }
+           } catch (e) {
+             this.overlay = true;
+           console.log("сервер не доступен , попробуйте повторить попытку позже");
+           console.log(e);
+           this.answer = 'Повторите попытку позже';
+
+         }
+      }
     }
 }
 </script>
@@ -144,7 +164,8 @@ export default {
 }
 .erroruser {
   text-align: center;
-  font-size: 1.6em;
+  font-size: 1.0em;
+  padding: 10px;
 }
 
 
