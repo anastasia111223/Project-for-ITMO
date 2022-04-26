@@ -10,10 +10,10 @@
                     <v-col col="6" sm="8" xs="12" align-self="center" >
                         <v-form ref="form"
                           @submit.prevent="forgotpsw"
+                          v-model="valid"
                           lazy-validation>
                         <label for="email">Почта</label>
                         <v-text-field id="email"
-                            label="Почта"
                             type="email"
                             v-model.trim="user.email"
                             class="border-radius.rounded-lg"
@@ -27,6 +27,7 @@
                         <v-row class="pa-1 my-2 justify-center">
                             <v-btn type="submit" depressed class="d-block ma-3 px=10"
                                 dark color="#351BA9" width="60%">Подтвердить</v-btn>
+                                <!-- :disabled="!valid" -->
                             <v-btn outlined color="#351BA9"
                                 class="d-block ma-3 px=10 #351BA9--text" width="60%">
                               <nuxt-link to="/registration"
@@ -42,7 +43,7 @@
                     <v-btn
                       class="erroruser white--text"
                       color="#351BA9"
-                      @click="overlay = false"></v-btn>
+                      @click="overlay = !overlay">{{answer}}</v-btn>
                    </v-overlay>
                    </v-col>
                 </v-row>
@@ -57,10 +58,11 @@ export default {
         return {
             user : {
                 password: "",
-                email: ""
+                email: "example@mail.ru"
             },
             emailRules: [
               v => !!v || 'Поле должно быть заполнено',
+              v => v!=="example@mail.ru" || 'Введите свой адрес почты',
               v => /.+@.+\..+/.test(v) || 'Введите верный адрес почты',
             ],
             page: "auth",
@@ -68,8 +70,9 @@ export default {
             message: "На почту будет отправлено письмо для смены пароля",
             overlay: false,
             absolute: true,
-            zIndex: 1
-
+            valid: true,
+            zIndex: 1,
+            answer: ""
         }
     },
     computed: {
@@ -88,8 +91,10 @@ export default {
             this.$refs.form.validate();
         },
         async forgotpsw() {
-        //  let answer = document.querySelector(".erroruser");
-         try {
+          // используется lazy validation:
+          const isValid = this.$refs.form.validate();
+          if (isValid) {
+          try {
           //  console.log('call local politic')
            let respons = await this.$axios.post('/password/forgot', {
              data: {
@@ -97,34 +102,33 @@ export default {
              }
            })
            console.log(respons.data);
-          
-          if (respons.data.app_code == 200) {
-            let answer = document.querySelector(".erroruser");
-             answer.innerText = 'На почту отправлено письмо для смены пароля';
-             this.overlay = true;
+           if (respons.data.app_code == 200) {
+            this.overlay = true;
+            this.answer = 'На почту отправлено письмо для смены пароля';
+             
              // задержка по времени
              function sleep(ms) {
               return new Promise(resolve => setTimeout(resolve, ms));
              }
              sleep(10000).then(() => { 
-               window.location.replace('/login');
+              //  window.location.replace('/login');
+              this.router.push('/login');
              });
           }
            if (respons.data.app_code == 403) {
+             this.overlay = true;
            // TODO: узнать код для 'почты нет в б.д.'
              console.log("показываем на форме предупреждение о почте");
-             let answer = document.querySelector(".erroruser");
-             answer.innerText = 'Не верно указана почта';
-             this.overlay = true;
+             this.answer = 'Не верно указана почта';
            }
            } catch (e) {
-           console.log("сервер не доступен, попробуйте повторить попытку позже");
-           console.log(e);
-           let answer = document.querySelector(".erroruser");
-           answer.innerText = 'Повторите попытку позже';
-           this.overlay = true;
-
-         }
+             this.overlay = true;
+             console.log("сервер не доступен, попробуйте повторить попытку позже");
+             console.log(e);
+             this.answer = 'Повторите попытку позже';
+           }
+         };
+        //  this.$refs.form.resetValidation();
       },
     }
 }

@@ -9,12 +9,14 @@
                 <v-row class="pa-0" justify="center">
                     <v-col col="6" sm="8" xs="12" align-self="center" >
                         <v-form ref="form"
-                          @submit="change"
+                          @submit.prevent="change"
+                          v-model="valid"
                           lazy-validation>
                         <label for="password">Пароль</label>
                         <v-text-field id="password"
-                            label="Пароль"
-                            type="password"
+                            :append-icon="showPasswordIcon ? 'mdi-eye' : 'mdi-eye-off'"
+                            :type="showPasswordIcon ? 'text' : 'password'"
+                            @click:append="showPasswordIcon = !showPasswordIcon"
                             v-model.trim="user.password"
                             class="border-radius.rounded-lg"
                             counter="50"
@@ -25,8 +27,9 @@
                             required></v-text-field>
                         <label for="password2">Повторите пароль</label>
                         <v-text-field id="password2"
-                            label="Повторите пароль"
-                            type="password"
+                            :append-icon="showPasswordIcon1 ? 'mdi-eye' : 'mdi-eye-off'"
+                            :type="showPasswordIcon1 ? 'text' : 'password'"
+                            @click:append="showPasswordIcon1 = !showPasswordIcon1"
                             v-model.trim="user.password2"
                             class="border-radius.rounded-lg"
                             counter="50"
@@ -70,8 +73,8 @@ export default {
     data(){
         return {
             user : {
-                password: "",
-                password2: ""
+                password: "test",
+                password2: "test"
             },
             passwordRules: [
               v => !!v || 'Поле должно быть заполнено',
@@ -88,6 +91,9 @@ export default {
             overlay: false,
             absolute: true,
             zIndex: 1,
+            valid: true,
+            showPasswordIcon: false,
+            showPasswordIcon1: false,
             path: "#",
             answer: ""
         }
@@ -107,10 +113,10 @@ export default {
         validate () {
             this.$refs.form.validate();
         },
-        async change(event) {
-         event.preventDefault();
-        //  this.overlay = true;
-         try {
+        async change() {
+          const isValid = this.$refs.form.validate();
+          if (isValid) {
+          try {
           //  console.log('call local politic')
            let respons = await this.$axios.post('/password/reset', {
              data: {
@@ -144,10 +150,10 @@ export default {
            }
            } catch (e) {
              this.overlay = true;
-           console.log("сервер не доступен , попробуйте повторить попытку позже");
-           console.log(e);
-           this.answer = 'Повторите попытку позже';
-
+             console.log("сервер не доступен , попробуйте повторить попытку позже");
+             console.log(e);
+             this.answer = 'Повторите попытку позже';
+           }
          }
       }
     }

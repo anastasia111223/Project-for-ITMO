@@ -17,10 +17,10 @@
                     <v-col col="6" sm="8" xs="12" align-self="center" >
                         <v-form ref="form"
                           @submit.prevent="login"
+                          v-model="valid"
                           lazy-validation>
                           <label for="name">Логин</label>
                           <v-text-field id="name"
-                            label="Александрович"
                             type="text"
                             v-model.trim="user.login"
                             class="border-radius.rounded-lg pa-0 ma-1"
@@ -32,11 +32,10 @@
                             onchange="validate"
                             height=40px
                             required></v-text-field>
-                    <!-- </v-row> -->
+                    <!-- </v-row> label="Александрович"-->
                     <!-- <v-row class="pa-1 my-2 d-block"> -->
                         <label for="password">Пароль</label>
                         <v-text-field id="password"
-                            label="Пароль"
                             v-model.trim="user.password"
                             :rules="passwordRules"
                             class="border-radius.rounded-lg"
@@ -74,7 +73,7 @@
                     <v-btn
                       class="erroruser white--text"
                       color="#351BA9"
-                      @click="overlay = false"></v-btn>
+                      @click="overlay = false">{{answer}}</v-btn>
                    </v-overlay>
                 </v-row>
                 <v-row class="pa-0 mt-12 justify-start align-self-center">
@@ -111,7 +110,9 @@ export default {
             message: "Пожалуйста, войдите в свой профиль",
             overlay: false,
             absolute: true,
+            valid: true,
             zIndex: 1,
+            answer: "",
             showPasswordIcon: false
         }
     },
@@ -127,9 +128,10 @@ export default {
       },
     },
     methods: {
-       async login() {
-         let answer = document.querySelector(".erroruser");
-         try {
+      async login() {
+         const isValid = this.$refs.form.validate();
+          if (isValid) {
+          try {
            console.log('call local politic')
            var respons = await this.$auth.loginWith('local', {
              data: {
@@ -140,69 +142,30 @@ export default {
            console.log(respons.data)
            if (respons.data.app_code == 403) {
            // TODO: дописать логику отображения сообщения о неправильном логине  и пароле
-             console.log("показываем на форме предупреждение о логине");
-             answer.innerText = 'Пользователь не зарегистрирован';
              this.overlay = true;
+             console.log("показываем на форме предупреждение о логине");
+             this.answer = 'Пользователь не зарегистрирован';
            }
 
            if (respons.data.app_code == 401) {
-             console.log("показываем на форме предупреждение что пароль не подходит");
-             answer.innerText = 'Неверный пароль';
              this.overlay = true;
+             console.log("показываем на форме предупреждение что пароль не подходит");
+             this.answer = 'Неверный пароль';
            }
-
            console.log(this.$auth.user)
            // this.$router.push('/')
          } catch (e) {
           // TODO: выводить сообщение пользователю что сервер не доступен
+           this.overlay = true;
            console.log("сервер не доступен , попробуйте повторить попытку позже")
            console.log(e)
-           answer.innerText = 'Повторите попытку позже';
-           this.overlay = true;
-
-         }
+           this.answer = 'Повторите попытку позже';
+          }
+        }
       },
-       validate () {
-            this.$refs.form.validate();
-        },
-    //     signIn(){
-    //       console.log("signIn")
-    //       // ..валидация и проверки
-    //     this.validate();
-    //   let fd= new FormData();
-    //   fd.append('login', this.user.name);
-    //   fd.append('passsword', this.user.password);
-    //   fetch('/auth', {
-    //     method: 'post',
-    //     body: fd
-    //   }).then(response => response.json())
-    //   .then(json => {
-    //     // тут действия зависят от того массива (массив получили из json) который прислал сервер
-    //     // сервер может прислать:
-    //     // [
-    //     // 'message' => 'token'  // или 'error'
-    //     // 'reason' => '1 - когда пришла ошибка ('error')
-    //     //  ]
-    //     let answer = document.querySelector(".erroruser");
-    //     if (!json.message ==='error') {
-    //       if (this.setAuth(json.message)) {
-    //         window.location.replace('/userPage');
-    //       }
-    //     } else if (json.message==='error' && json.reason === 1) {
-    //       answer.innerText = 'Такой пользователь не зарегистрирован';
-    //       this.overlay = true;
-    //     //   отправка текста в overlay и его отоблражение true
-    //     } else if (json.message==='error' && json.reason === 2) {
-    //       answer.innerText = 'Неверный пароль';
-    //       this.overlay = true;
-    //     } else {
-    //       answer.innerText = 'Попробуйте позже';
-    //       this.overlay = true;
-    //     }
-    //   }).catch(e => {
-    //     console.log(e); // перехват ошибки, если грубая ошибка, не установилось соединение
-    //   });
-    // }
+      validate () {
+          this.$refs.form.validate();
+      }
     }
 
 }
