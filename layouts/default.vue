@@ -67,10 +67,10 @@
       <v-toolbar-title v-text="title" />
       <v-spacer />
       <!-- @click.stop="rightDrawer = !rightDrawer" -->
-      <span> {{  $auth.user.name + " " + $auth.user.surname }}</span>
-     <v-btn  icon  @click="$auth.logout()">
-            <v-icon>mdi-logout</v-icon>
-      </v-btn>
+      <!-- <span> {{  $auth.user.name + " " + $auth.user.surname }}</span> -->
+     <!-- <v-btn  icon  @click="$auth.logout()"> -->
+            <!-- <v-icon>mdi-logout</v-icon> -->
+      <!-- </v-btn> -->
 
     </v-app-bar>
     <v-main>
